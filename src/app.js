@@ -1,6 +1,7 @@
 import { games, resolvePage } from './games.js';
 import { showVisitorCounter } from './visits.js';
 import { siteTitle } from './site-config.js';
+import { renderAbout } from './about.js';
 
 const base = new URL('../', import.meta.url);
 const app = document.querySelector('#app');
@@ -43,6 +44,7 @@ function renderHome() {
   currentGame = null;
   app.innerHTML = `<main id="content" class="home page-enter">
     <h1 class="home-title" lang="ja" tabindex="-1">${escape(siteTitle)}</h1>
+    <div class="game-row about-row"><a class="game-link" href="${url('about/')}" data-route><img class="about-thumbnail" src="${url('assets/about/home-about.webp')}" width="773" height="1031" alt="" decoding="async"><span class="game-name">소개</span><span class="row-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 12h16m-6-6 6 6-6 6"/></svg></span></a></div>
       <ul class="game-list" aria-label="게임 목록">${games.map((game, i) => `<li class="game-row" style="--game-color:${game.color}">
         <a class="game-link" data-route href="${pageUrl(game)}" aria-labelledby="title-${game.id}" aria-describedby="genre-${game.id}"><span class="game-image" style="${frameStyle(game.images[0])}">${imageTag(game.images[0], '', i === 0 ? 'fetchpriority="high"' : '')}</span><span class="game-label"><span class="game-name" id="title-${game.id}">${escape(game.title)}</span><span class="game-genre" id="genre-${game.id}">${escape(game.genre)}</span></span><span class="row-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 12h16m-6-6 6 6-6 6"/></svg></span></a>
         ${game.play ? `<a class="quick-play" href="${game.play}" target="_blank" rel="noopener noreferrer" aria-label="${escape(game.title)} itch.io에서 플레이 (새 탭)">플레이 <span aria-hidden="true">↗</span></a>` : ''}
@@ -113,9 +115,10 @@ function changeShot(index) {
 function render(focus = false) {
   document.body.classList.remove('modal-open');
   const page = resolvePage(location.pathname, base.pathname);
-  document.title = page.type === 'game' ? `${page.game.title} | ${siteTitle}` : siteTitle;
+  document.title = page.type === 'game' ? `${page.game.title} | ${siteTitle}` : page.type === 'about' ? `소개 | ${siteTitle}` : siteTitle;
   if (page.type === 'game') renderGame(page.game);
   else if (page.type === 'home') renderHome();
+  else if (page.type === 'about') { currentGame = null; renderAbout(app, base, siteTitle); }
   else app.innerHTML = `<main id="content" class="missing"><h1 tabindex="-1">페이지를 찾을 수 없어요.</h1><a href="${base.href}" data-route>전체 게임으로 돌아가기 ↗</a></main>`;
   showVisitorCounter(app);
   if (focus) { window.scrollTo({ top: 0, behavior: 'instant' }); app.querySelector('h1')?.focus({ preventScroll: true }); }

@@ -117,6 +117,7 @@ export function resolvePage(pathname, basePath = '/') {
   if (!pathname.startsWith(basePath)) return { type: 'missing' };
   const path = pathname.slice(basePath.length).replace(/(?:^\/|\/+$)/g, '').replace(/(?:^|\/)index\.html$/, '');
   if (!path) return { type: 'home' };
+  if (path === 'about') return { type: 'about' };
   const match = /^games\/([a-z0-9-]+)$/.exec(path);
   const game = match && getGame(match[1]);
   return game ? { type: 'game', game } : { type: 'missing' };
