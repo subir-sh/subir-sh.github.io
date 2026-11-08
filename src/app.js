@@ -2,6 +2,8 @@ import { games, resolvePage } from './games.js';
 import { showVisitorCounter } from './visits.js';
 import { siteTitle } from './site-config.js';
 import { renderAbout } from './about.js';
+import { rewindExample, setupRewindExample } from './chronos-rewind.js';
+import { wordLinkExample, setupWordLinkExample } from './wordlink-example.js';
 
 const base = new URL('../', import.meta.url);
 const app = document.querySelector('#app');
@@ -40,14 +42,21 @@ function illustratedGuide(game) {
   </div>`;
 }
 
+function screenshotWalkthrough(steps) {
+  return `<ol class="screenshot-walkthrough">${steps.map(step => `<li><figure>
+    <img src="${url(`assets/images/${step.src}`)}" alt="${escape(step.alt)}" width="960" height="600" loading="lazy">
+    <figcaption><h3>${escape(step.title)}</h3><p class="walkthrough-keys">${step.keys.map(inputTag).join('')}</p><p>${escape(step.text)}</p></figcaption>
+  </figure></li>`).join('')}</ol>`;
+}
+
 function renderHome() {
   currentGame = null;
   app.innerHTML = `<main id="content" class="home page-enter">
     <h1 class="home-title" lang="ja" tabindex="-1">${escape(siteTitle)}</h1>
     <div class="game-row about-row"><a class="game-link" href="${url('about/')}" data-route><img class="about-thumbnail" src="${url('assets/about/home-about.webp')}" width="773" height="1031" alt="" decoding="async"><span class="game-name">소개</span><span class="row-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 12h16m-6-6 6 6-6 6"/></svg></span></a></div>
-      <ul class="game-list" aria-label="게임 목록">${games.map((game, i) => `<li class="game-row" style="--game-color:${game.color}">
+      <ul class="game-list" aria-label="작품 목록">${games.map((game, i) => `<li class="game-row" style="--game-color:${game.color}">
         <a class="game-link" data-route href="${pageUrl(game)}" aria-labelledby="title-${game.id}" aria-describedby="genre-${game.id}"><span class="game-image" style="${frameStyle(game.images[0])}">${imageTag(game.images[0], '', i === 0 ? 'fetchpriority="high"' : '')}</span><span class="game-label"><span class="game-name" id="title-${game.id}">${escape(game.title)}</span><span class="game-genre" id="genre-${game.id}">${escape(game.genre)}</span></span><span class="row-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 12h16m-6-6 6 6-6 6"/></svg></span></a>
-        ${game.play ? `<a class="quick-play" href="${game.play}" target="_blank" rel="noopener noreferrer" aria-label="${escape(game.title)} itch.io에서 플레이 (새 탭)">플레이 <span aria-hidden="true">↗</span></a>` : ''}
+        ${game.play && !game.download ? `<a class="quick-play" href="${game.play}" target="_blank" rel="noopener noreferrer" aria-label="${escape(game.title)} 플레이 (새 탭)">플레이 <span aria-hidden="true">↗</span></a>` : ''}
       </li>`).join('')}<li class="upcoming-row"><span class="upcoming-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span><span>Coming Soon</span></li></ul>
   </main>`;
 }
@@ -55,25 +64,31 @@ function renderHome() {
 function renderGame(game) {
   currentGame = game;
   galleryIndex = 0;
-  app.innerHTML = `<nav class="game-navigation" aria-label="게임 선택"><a class="back-home" href="${base.href}" data-route><span aria-hidden="true">←</span> 전체 게임</a><div class="game-tabs">${games.map(item => `<a href="${pageUrl(item)}" data-route ${item.id === game.id ? 'aria-current="page"' : ''}>${escape(item.title)}</a>`).join('')}</div></nav>
+  const hasShots = game.images.length > 1;
+  app.innerHTML = `<nav class="game-navigation" aria-label="작품 선택"><a class="back-home" href="${base.href}" data-route><span aria-hidden="true">←</span> 전체 목록</a><div class="game-tabs">${games.map(item => `<a href="${pageUrl(item)}" data-route ${item.id === game.id ? 'aria-current="page"' : ''}>${escape(item.title)}</a>`).join('')}</div></nav>
     <main id="content" class="detail page-enter" style="--game-color:${game.color}">
       <div class="game-copy">
-        <h1 tabindex="-1">${escape(game.title)}</h1>
+        <h1 tabindex="-1">${escape(game.detailTitle || game.title)}</h1>
         <p class="detail-genre">${escape(game.genre)}</p>
         <p class="description">${escape(game.description)}</p>
-        ${game.play ? `<div class="play-area"><a class="play-button" href="${game.play}" target="_blank" rel="noopener noreferrer" aria-label="${escape(game.title)} itch.io에서 플레이 (새 탭)">플레이 ${arrow}</a><span class="play-context">${escape(game.environment)}</span></div>` : '<p class="play-status">웹 데모 미공개</p>'}
+        ${game.play ? `<div class="play-area"><a class="play-button" href="${game.play}" ${game.download ? '' : 'target="_blank" rel="noopener noreferrer"'}>${escape(game.playLabel || '플레이')} ${arrow}</a>${game.environment ? `<span class="play-context">${escape(game.environment)}</span>` : ''}</div>` : '<p class="play-status">웹 데모 미공개</p>'}
       </div>
-      <div class="gallery" role="group" aria-label="게임 화면">
+      <div class="gallery" role="group" aria-label="작품 화면">
         <button class="gallery-stage" id="gallery-stage" style="${frameStyle(game.images[0])}" type="button" aria-label="${escape(game.images[0].alt)} 크게 보기">${imageTag(game.images[0], 'gallery-picture', 'fetchpriority="high"')}<span class="expand-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 9V4h5m6 0h5v5M4 15v5h5m6 0h5v-5"/></svg></span></button>
-        <div class="thumbnails" role="group" aria-label="화면 선택">${game.images.map((image, i) => `<button type="button" style="${frameStyle(image)}" data-shot="${i}" aria-controls="gallery-stage" aria-pressed="${i === 0}" aria-label="화면 ${i + 1}: ${escape(image.alt)}">${imageTag(image)}</button>`).join('')}</div>
+        ${hasShots ? `<div class="thumbnails" role="group" aria-label="화면 선택">${game.images.map((image, i) => `<button type="button" style="${frameStyle(image)}" data-shot="${i}" aria-controls="gallery-stage" aria-pressed="${i === 0}" aria-label="화면 ${i + 1}: ${escape(image.alt)}">${imageTag(image)}</button>`).join('')}</div>` : ''}
       </div>
-      <section class="manual" aria-labelledby="manual-title"><div class="manual-heading"><h2 id="manual-title">플레이 방법</h2></div>${game.guide ? illustratedGuide(game) : `<div class="manual-body ${game.controls.length ? '' : 'flow-only'}"><div class="manual-flow"><ol>${game.steps.map(step => `<li>${escape(step)}</li>`).join('')}</ol><p class="tip">${escape(game.tip)}</p></div>${game.controls.length ? `<dl class="controls">${game.controls.map(control => `<div><dt>${control.keys.map(inputTag).join('')}</dt><dd>${escape(control.action)}</dd></div>`).join('')}</dl>` : ''}</div>`}</section>
+      <section class="manual" aria-labelledby="manual-title"><div class="manual-heading"><h2 id="manual-title">${escape(game.manualTitle || '플레이 방법')}</h2></div>${game.guide ? illustratedGuide(game) : game.walkthrough ? `${rewindExample}${screenshotWalkthrough(game.walkthrough)}` : game.id === 'yeonieum' ? wordLinkExample : `<div class="manual-body ${game.controls.length ? '' : 'flow-only'}"><div class="manual-flow"><ol>${game.steps.map(step => `<li>${escape(step)}</li>`).join('')}</ol>${game.tip ? `<p class="tip">${escape(game.tip)}</p>` : ''}</div>${game.controls.length ? `<dl class="controls">${game.controls.map(control => `<div><dt>${control.keys.map(inputTag).join('')}</dt><dd>${escape(control.action)}</dd></div>`).join('')}</dl>` : ''}</div>`}</section>
+      ${game.credit ? `<p class="project-credit">${escape(game.credit)}</p>` : ''}
     </main>
-    <dialog class="lightbox" aria-label="게임 화면 확대"><div class="lightbox-toolbar"><button class="icon-button" data-lightbox-step="-1" aria-label="확대 화면 이전">←</button><button class="icon-button" data-lightbox-step="1" aria-label="확대 화면 다음">→</button><button class="lightbox-close" aria-label="확대 화면 닫기">닫기 <span aria-hidden="true">×</span></button></div><div class="lightbox-image" style="${frameStyle(game.images[0])}">${imageTag(game.images[0])}</div></dialog>`;
+    <dialog class="lightbox" aria-label="작품 화면 확대"><div class="lightbox-toolbar">${hasShots ? '<button class="icon-button" data-lightbox-step="-1" aria-label="확대 화면 이전">←</button><button class="icon-button" data-lightbox-step="1" aria-label="확대 화면 다음">→</button>' : ''}<button class="lightbox-close" aria-label="확대 화면 닫기">닫기 <span aria-hidden="true">×</span></button></div><div class="lightbox-image" style="${frameStyle(game.images[0])}">${imageTag(game.images[0])}</div></dialog>`;
 
   app.querySelectorAll('[data-lightbox-step]').forEach(button => button.addEventListener('click', () => changeShot(galleryIndex + Number(button.dataset.lightboxStep))));
   const dialog = app.querySelector('dialog');
   const stage = app.querySelector('.gallery-stage');
+  const rewind = app.querySelector('.rewind-example');
+  if (rewind) setupRewindExample(rewind);
+  const wordExample = app.querySelector('.word-example');
+  if (wordExample) setupWordLinkExample(wordExample);
   app.querySelectorAll('[data-shot]').forEach(button => button.addEventListener('click', () => changeShot(Number(button.dataset.shot))));
   stage.addEventListener('click', () => {
     dialog.showModal();
@@ -115,7 +130,7 @@ function changeShot(index) {
 function render(focus = false) {
   document.body.classList.remove('modal-open');
   const page = resolvePage(location.pathname, base.pathname);
-  document.title = page.type === 'game' ? `${page.game.title} | ${siteTitle}` : page.type === 'about' ? `소개 | ${siteTitle}` : siteTitle;
+  document.title = page.type === 'game' ? `${page.game.detailTitle || page.game.title} | ${siteTitle}` : page.type === 'about' ? `소개 | ${siteTitle}` : siteTitle;
   if (page.type === 'game') renderGame(page.game);
   else if (page.type === 'home') renderHome();
   else if (page.type === 'about') { currentGame = null; renderAbout(app, base, siteTitle); }
