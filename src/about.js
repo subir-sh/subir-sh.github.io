@@ -18,7 +18,7 @@ const groups = [
 
 export function renderAbout(app, base, title) {
   const asset = name => new URL(`assets/about/${name}`,base).href;
-  const dimensions = {'japan-map.png':[1548,1753],'ramen.webp':[773,1031]};
+  const dimensions = {'japan-keikenchi.png':[1548,1753],'ramen.webp':[773,1031]};
   const picture = (file,label,extra='',caption=label) => {
     const [width,height]=dimensions[file] || [773,581];
     return `<figure class="interest-picture ${extra}"><button type="button" data-enlarge="${asset(file)}" data-label="${label || 'STELLIVE'}" aria-label="${label || 'STELLIVE 사진'} 크게 보기"><img src="${asset(file)}" alt="${label || 'STELLIVE 콘서트 현장'}" width="${width}" height="${height}" loading="lazy" decoding="async"></button>${caption?`<figcaption>${caption}</figcaption>`:''}</figure>`;
@@ -31,7 +31,7 @@ export function renderAbout(app, base, title) {
       </section>
       <section id="interests" class="interests" aria-labelledby="interests-title"><h2 id="interests-title">좋아하는 것</h2>
         <section class="interest-row"><h3>언어</h3><ul class="language-terms"><li>Phonology</li><li>Morphology</li><li>Optimality Theory</li></ul></section>
-        <section class="interest-row"><h3>일본 문화</h3><div class="culture-layout">${picture('japan-map.png','일본 경현치','travel-map','')}<div class="culture-side">${picture('ramen.webp','음식','food-square')}${picture('anime.webp','애니메이션')}${picture('live.webp','행사')}${picture('fuji-sunrise.webp','후지산 등정')}</div></div></section>
+        <section class="interest-row"><h3>일본 문화</h3><div class="culture-layout">${picture('japan-keikenchi.png','일본 경현치','travel-map','')}<div class="culture-side">${picture('ramen.webp','음식','food-square')}${picture('anime.webp','애니메이션')}${picture('live.webp','행사')}${picture('fuji-sunrise.webp','후지산 등정')}</div></div></section>
         <section class="interest-row"><h3>STELLIVE</h3><div class="stellive-grid">${picture('stellive.webp','')}${picture('stellive-live.webp','')}</div></section>
       </section>
     </main>
