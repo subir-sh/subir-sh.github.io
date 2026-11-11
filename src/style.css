@@ -337,6 +337,9 @@ kbd{font-family:inherit;display:inline-flex;align-items:center;min-height:25px;p
 .culture-side .food-square button{width:min(100%,165px);height:auto;justify-self:center;align-self:center}
 .culture-side .food-square img{width:100%;height:auto;max-height:none;aspect-ratio:1;object-fit:cover;object-position:50% 100%;transform:scale(1.12);transform-origin:center 38%}
 .culture-side figcaption{margin:0;word-break:keep-all}
+.culture-side figcaption:has(.anime-record-link){display:flex;flex-wrap:wrap;gap:2px 8px}
+.anime-record-link{color:var(--muted);text-decoration:underline;text-underline-offset:3px;white-space:nowrap}
+.anime-record-link:hover,.anime-record-link:focus-visible{color:var(--ink)}
 .stellive-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:start}
 .stellive-grid figcaption:empty{display:none}
 .favorites,.interests{scroll-margin-top:24px}
