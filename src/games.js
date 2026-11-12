@@ -5,8 +5,8 @@ export const games = [
     genre: '턴제 3D 퍼즐',
     color: '#b8c5da',
     description: '과거의 나와 함께 출구까지 길을 만드는 턴제 퍼즐.\n현재의 나와 분신이 버튼, 상자, 발판을 나눠 맡습니다.',
-    play: 'https://2024fall-swpp.github.io/team-project-for-2024-fall-swpp-team-12/',
-    playLabel: '브라우저에서 플레이',
+    play: 'https://subir-sh.itch.io/chronos-remake?secret=ZiIGxSOfrSqnECXJcanyEXzKOMM',
+    environment: 'PC / 키보드',
     images: [
       { src: 'chronos-turns.webp', size: [1200, 710], alt: '턴별 이동 기록과 상자가 보이는 크로노스 퍼즐 화면' },
       { src: 'chronos-lasers.webp', size: [1060, 781], alt: '플레이어와 분신이 레이저 퍼즐을 함께 푸는 화면' },
