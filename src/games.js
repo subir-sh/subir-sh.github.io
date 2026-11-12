@@ -8,13 +8,13 @@ export const games = [
     play: 'https://subir-sh.itch.io/chronos-remake?secret=ZiIGxSOfrSqnECXJcanyEXzKOMM',
     environment: 'PC / 키보드',
     images: [
-      { src: 'chronos-turns.webp', size: [1200, 710], alt: '턴별 이동 기록과 상자가 보이는 크로노스 퍼즐 화면' },
-      { src: 'chronos-lasers.webp', size: [1060, 781], alt: '플레이어와 분신이 레이저 퍼즐을 함께 푸는 화면' },
+      { src: 'chronos-turns.webp', size: [1600, 900], alt: '분신이 계단 밑에서 큰 상자를 밀고, 위쪽에 턴별 행동 기록이 보이는 화면' },
+      { src: 'chronos-lasers.webp', size: [1600, 900], alt: '분신이 발판을 지키는 동안 플레이어가 레이저 사이를 지나가는 화면' },
     ],
     walkthrough: [
-      { src: 'chronos-guide-move.webp', alt: '플레이어가 발판 가운데로 움직인 직후', title: '먼저 움직이기', keys: ['W', 'A', 'S', 'D'], text: '이동 키를 한 번 누를 때마다 한 턴 움직입니다.' },
-      { src: 'chronos-guide-rewind.webp', alt: '시간을 두 턴 돌려 발판 왼쪽으로 돌아온 플레이어와 우측 상단의 행동 기록', title: '이전 턴으로 돌아가기', keys: ['Space', 'Q'], text: 'Space로 시간 되돌리기를 켠 뒤, Q를 눌러 한 턴씩 과거로 돌아갑니다.' },
-      { src: 'chronos-guide-clone.webp', alt: '왼쪽은 새 방향으로 움직인 플레이어, 오른쪽은 이전 행동을 따라가는 반투명 분신', title: '분신과 같이 움직이기', keys: ['Space'], text: 'Space를 다시 누르고 다른 방향으로 움직입니다.\n화면 왼쪽이 현재의 나, 오른쪽의 반투명한 캐릭터가 이전 경로를 따라가는 분신입니다.' },
+      { src: 'chronos-guide-move.webp', alt: '플레이어가 출발점에서 두 칸 앞으로 움직인 직후', title: '먼저 움직이기', keys: ['W', 'A', 'S', 'D'], text: '이동 키를 한 번 누를 때마다 한 턴 움직입니다.' },
+      { src: 'chronos-guide-rewind.webp', alt: '시간 되돌리기를 켜고 과거로 돌아가는 중인 플레이어와 위쪽의 행동 기록', title: '이전 턴으로 돌아가기', keys: ['Space', 'Q'], text: 'Space로 시간 되돌리기를 켠 뒤, Q를 눌러 한 턴씩 과거로 돌아갑니다.' },
+      { src: 'chronos-guide-clone.webp', alt: '위쪽은 새 길로 움직인 플레이어, 아래쪽은 이전 행동을 따라 발판으로 가는 분신', title: '분신과 같이 움직이기', keys: ['Space'], text: 'Space를 다시 누르고 다른 방향으로 움직입니다.\n흰 토끼가 현재의 나, 주황색 토끼가 이전 경로를 따라가는 분신입니다.' },
     ],
     credit: '팀 제작 / 턴 진행, 시간 되돌리기와 분신 재생 담당',
   },
