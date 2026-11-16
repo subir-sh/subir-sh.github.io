@@ -25,7 +25,7 @@ export const games = [
     genre: '단어 카드 퍼즐',
     color: '#b0cce4',
     description: '주어진 단어 두 개를 손패의 카드로 연결하는 일일 퍼즐.',
-    play: 'https://subir-sh.github.io/WordLink-WebGL/',
+    play: 'https://miniron-v.github.io/yeonieum/',
     playLabel: '오늘의 퍼즐 풀기',
     images: [
       { src: 'yeonieum-daily.webp', size: [1200, 675], alt: '연이음 일일 퍼즐에서 시작과 끝 단어, 손패, 제출 버튼이 보이는 화면' },
