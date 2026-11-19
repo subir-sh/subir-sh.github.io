@@ -5,7 +5,7 @@ export const games = [
     genre: '턴제 3D 퍼즐',
     color: '#b8c5da',
     description: '과거의 나와 함께 출구까지 길을 만드는 턴제 퍼즐.\n현재의 나와 분신이 버튼, 상자, 발판을 나눠 맡습니다.',
-    play: 'https://subir-sh.itch.io/chronos-remake?secret=ZiIGxSOfrSqnECXJcanyEXzKOMM',
+    play: 'https://subir-sh.itch.io/chronos-remake',
     environment: 'PC / 키보드',
     images: [
       { src: 'chronos-turns.webp', size: [1600, 900], alt: '분신이 계단 밑에서 큰 상자를 밀고, 위쪽에 턴별 행동 기록이 보이는 화면' },
